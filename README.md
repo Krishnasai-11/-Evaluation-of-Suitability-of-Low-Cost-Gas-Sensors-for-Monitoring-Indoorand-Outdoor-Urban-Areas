@@ -1,0 +1,2 @@
+# -Evaluation-of-Suitability-of-Low-Cost-Gas-Sensors-for-Monitoring-Indoorand-Outdoor-Urban-Areas
+Project: Low-Cost Gas Sensors for Urban Monitoring Used MQ2, MQ3, MQ7, MQ135 sensors 🌬️ to detect gases, classifying indoor/outdoor location with 99.47% accuracy 🎯 via PNN 🤖. Future plans include adding temp, humidity, and light sensors 🌡️💧💡 and exploring smart elderly care applications 👵📲. Tech: Arduino 🖥️, Wi-Fi 🌐, ML 🧠, PNN.

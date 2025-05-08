@@ -1,0 +1,55 @@
+#include <SoftwareSerial.h>
+
+String apiKey = "5T1W95SLY9HQA8V5"; // ThingSpeak API key
+SoftwareSerial ser(10, 9); // RX, TX
+
+void setup() {
+  Serial.begin(115200);
+  ser.begin(115200);
+  ser.println("AT+RST");
+  delay(5000);
+
+  ser.println("AT+CWMODE=1");
+  delay(2000);
+  ser.println("AT+CWJAP=\"Your_SSID\",\"Your_PASSWORD\""); // <- Replace
+  delay(5000);
+}
+
+void loop() {
+  float mq7Value = analogRead(A0);
+  float mq2Value = analogRead(A1);
+  float mq3Value = analogRead(A2);
+  float mq135Value = analogRead(A3);
+
+  Serial.print("MQ-7: "); Serial.println(mq7Value);
+  Serial.print("MQ-2: "); Serial.println(mq2Value);
+  Serial.print("MQ-3: "); Serial.println(mq3Value);
+  Serial.print("MQ-135: "); Serial.println(mq135Value);
+
+  ser.println("AT+CIPSTART=\"TCP\",\"api.thingspeak.com\",80");
+  delay(2000);
+  if (ser.find("Error")) {
+    Serial.println("AT+CIPSTART error");
+    return;
+  }
+
+  String getStr = "GET /update?api_key=" + apiKey +
+                  "&field1=" + String(mq7Value) +
+                  "&field2=" + String(mq2Value) +
+                  "&field3=" + String(mq3Value) +
+                  "&field4=" + String(mq135Value) + "\r\n\r\n";
+
+  String cmd = "AT+CIPSEND=" + String(getStr.length());
+  ser.println(cmd);
+  delay(1000);
+
+  if (ser.find(">")) {
+    ser.print(getStr);
+  } else {
+    ser.println("AT+CIPCLOSE");
+    Serial.println("Connection closed");
+    return;
+  }
+
+  delay(16000); // ThingSpeak accepts updates every 15 seconds
+}
